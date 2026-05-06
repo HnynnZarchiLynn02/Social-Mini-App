@@ -1,22 +1,27 @@
 package main
 
 import (
-	"backend/internal/database"
-	"backend/internal/models"
-	"github.com/joho/godotenv"
-	"github.com/gin-gonic/gin"
-	
-
+    "backend/internal/database"
+    "backend/internal/models"
+    "backend/internal/routes"
+    "github.com/gin-gonic/gin"
+    "github.com/joho/godotenv"
 )
+
 func main() {
-	godotenv.Load()
-	database.ConnectDB()
-	database.DB.AutoMigrate(&models.User{})
+    // Load environment variables from .env
+    godotenv.Load()
 
-	r := gin.Default()
+    // Initialize Database
+    database.ConnectDB()
+    database.DB.AutoMigrate(&models.User{})
 
-	// Routes ချိတ်ဆက်ခြင်း
-	routes.SetupRoutes(r)
+    // Initialize Router
+    r := gin.Default()
 
-	r.Run(":8080")
+    // Setup Routes with CORS logic
+    routes.SetupRoutes(r)
+
+    // Start Server
+    r.Run(":8080")
 }
