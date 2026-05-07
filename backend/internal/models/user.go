@@ -9,6 +9,6 @@ type User struct {
     Username string `gorm:"unique;not null" json:"username"`
     Email    string `gorm:"unique;not null" json:"email"`
     Password string `gorm:"not null" json:"-"`
-    Bio      string `json:"bio"`
-    Avatar   string `json:"avatar"` // Image URL သိမ်းရန်
+    Bio      string `gorm:"type:text" json:"bio"`
+    Avatar   string `gorm:"type:text" json:"avatar"`
 }

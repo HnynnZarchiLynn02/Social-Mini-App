@@ -22,6 +22,7 @@ func SetupRoutes(r *gin.Engine) {
     
     r.POST("/register", handlers.RegisterUser)
     r.POST("/login", handlers.LoginUser)
+    r.Static("/uploads", "./uploads")
 
     
     protected := r.Group("/")
@@ -29,5 +30,6 @@ func SetupRoutes(r *gin.Engine) {
     {
         protected.GET("/profile", handlers.GetProfile)
         protected.PUT("/profile", handlers.UpdateProfile)
+        protected.POST("/upload", handlers.UploadAvatar)
     }
 }
