@@ -23,9 +23,9 @@ func ConnectDB() {
 
     db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
     if err != nil {
-        log.Fatalf("Database connection failed: %v", err)
+        log.Fatalf("Database connection error: %v", err)
     }
 
     fmt.Println("Database Connection Successful!")
-    DB = db // Fixed: Correctly assigning the local 'db' to the global 'DB'
+    DB = db 
 }
