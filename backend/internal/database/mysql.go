@@ -29,9 +29,12 @@ func ConnectDB() {
 
     // --- ဒီအပိုင်းကို ထည့်လိုက်ခြင်းဖြင့် Column အသစ်တွေ (Bio, Avatar) ပေါ်လာပါလိမ့်မယ် ---
     fmt.Println("Migrating database models...")
-    err = db.AutoMigrate(&models.User{})
-    if err != nil {
-        log.Printf("Migration error: %v", err)
+    if err := db.AutoMigrate(&models.User{}); err != nil {
+        log.Printf("User migration error: %v", err)
+    }
+
+    if err := db.AutoMigrate(&models.Post{}); err != nil {
+        log.Printf("Post migration error: %v", err)
     }
 
     fmt.Println("Database Connection and Migration Successful!")

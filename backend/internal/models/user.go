@@ -8,7 +8,7 @@ type User struct {
     gorm.Model
     Username string `gorm:"unique;not null" json:"username"`
     Email    string `gorm:"unique;not null" json:"email"`
-    Password string `gorm:"not null" json:"-"`
-    Bio      string `gorm:"type:text" json:"bio"`
-    Avatar   string `gorm:"type:text" json:"avatar"`
+    Password string `gorm:"not null" json:"-"` // gorm:"type:text" ဆိုတာမျိုး မသုံးပါနဲ့
+    Bio      string `json:"bio"`
+    Avatar   string `json:"avatar"`
 }
