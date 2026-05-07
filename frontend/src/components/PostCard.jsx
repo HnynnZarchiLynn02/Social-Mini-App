@@ -88,12 +88,12 @@ const PostCard = ({
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border mb-6 overflow-hidden">
-            <div className="p-4 flex items-center justify-between">
+        <div className="bg-slate-50 rounded-2xl shadow-md shadow-slate-200/70 border border-slate-200 mb-5 overflow-hidden h-[560px] flex flex-col">
+            <div className="p-4 flex items-center justify-between border-b border-slate-200 bg-white/70">
                 <div className="flex items-center">
                     <img
                         src={post.user?.avatar || 'https://via.placeholder.com/40'}
-                        className="w-10 h-10 rounded-full mr-3 object-cover border"
+                        className="w-11 h-11 rounded-full mr-3 object-cover border-2 border-white shadow-sm"
                         alt="avatar"
                     />
                     <div>
@@ -122,11 +122,11 @@ const PostCard = ({
                 )}
             </div>
 
-            <div className="px-4 pb-3">
+            <div className={`px-4 py-3 overflow-y-auto bg-slate-50 ${post.media_url ? 'min-h-[90px] max-h-[115px]' : 'min-h-[210px] max-h-[240px]'}`}>
                 {isEditing ? (
-                    <div className="mt-2 bg-gray-50 p-2 rounded-lg border">
+                    <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
                         <textarea
-                            className="w-full p-2 bg-white border rounded-md focus:ring-1 focus:ring-blue-400 outline-none resize-none"
+                            className="w-full p-3 bg-white border rounded-lg focus:ring-1 focus:ring-blue-400 outline-none resize-none"
                             rows="3"
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
@@ -147,19 +147,21 @@ const PostCard = ({
                         </div>
                     </div>
                 ) : (
-                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
-                        {post.content}
-                    </p>
+                    <div className={post.media_url ? '' : 'h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-100 px-5 py-4 shadow-inner'}>
+                        <p className={`text-gray-800 whitespace-pre-wrap leading-relaxed break-words ${post.media_url ? '' : 'text-[15px]'}`}>
+                            {post.content}
+                        </p>
+                    </div>
                 )}
             </div>
 
             {post.media_url && (
-                <div className="bg-gray-100 border-y flex justify-center">
+                <div className="bg-slate-100 border-y border-slate-200 flex justify-center h-[190px] overflow-hidden">
                     {post.media_type === 'image' && (
-                        <img src={post.media_url} className="max-w-full h-auto max-h-[500px]" alt="post" />
+                        <img src={post.media_url} className="w-full h-full object-cover" alt="post" />
                     )}
                     {post.media_type === 'video' && (
-                        <video controls className="w-full max-h-[500px] bg-black">
+                        <video controls className="w-full h-full object-contain bg-black">
                             <source src={post.media_url} />
                         </video>
                     )}
@@ -171,7 +173,7 @@ const PostCard = ({
                 </div>
             )}
 
-            <div className="border-t px-4 py-3 flex items-center gap-3">
+            <div className="border-t border-slate-200 px-4 py-2.5 flex items-center gap-3 bg-white/60">
                 <button
                     onClick={handleLikeClick}
                     disabled={isTogglingLike}
@@ -188,8 +190,8 @@ const PostCard = ({
                 </span>
             </div>
 
-            <div className="border-t bg-gray-50 px-4 py-3">
-                <div className="space-y-3 mb-3">
+            <div className="border-t border-slate-200 bg-slate-100/70 px-4 py-3 flex-1 min-h-0 flex flex-col">
+                <div className="space-y-3 mb-3 overflow-y-auto pr-1 flex-1">
                     {comments.map((comment) => {
                         const commentID = getID(comment);
                         const canManageComment = Number(getUserID(comment)) === Number(currentUserID);
@@ -203,7 +205,7 @@ const PostCard = ({
                                     alt="comment avatar"
                                 />
                                 <div className="flex-1">
-                                    <div className="bg-white border rounded-lg px-3 py-2">
+                                    <div className="bg-white/90 border border-slate-200 rounded-xl px-3 py-2 shadow-sm">
                                         <div className="flex items-center justify-between gap-3">
                                             <span className="text-sm font-bold text-gray-800 capitalize">
                                                 {comment.user?.username || 'User'}
@@ -269,14 +271,14 @@ const PostCard = ({
 
                 <form onSubmit={handleCommentSubmit} className="flex gap-2">
                     <input
-                        className="flex-1 bg-white border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-blue-400"
+                        className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-blue-400"
                         placeholder="Write a comment..."
                         value={commentContent}
                         onChange={(e) => setCommentContent(e.target.value)}
                     />
                     <button
                         disabled={isSubmittingComment}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
                     >
                         Comment
                     </button>

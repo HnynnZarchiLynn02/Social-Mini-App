@@ -82,7 +82,7 @@ func CreatePost(c *gin.Context) {
 
 		if strings.Contains(".jpg.jpeg.png.gif.webp", ext) && ext != "" {
 			mediaType = "image"
-		} else if strings.Contains(".mp4.mov.avi.mkv", ext) && ext != "" {
+		} else if strings.Contains(".mp4.mov.avi.mkv.webm", ext) && ext != "" {
 			mediaType = "video"
 		} else if strings.Contains(".mp3.wav.ogg", ext) && ext != "" {
 			mediaType = "audio"
