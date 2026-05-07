@@ -9,10 +9,10 @@ import (
 	"path/filepath"
 	"time"
 
-    "log"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 // RegisterUser - အကောင့်သစ်ဖွင့်ရန်
@@ -76,6 +76,7 @@ func LoginUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"token":    tokenString,
+		"id":       user.ID,
 		"username": user.Username,
 	})
 }
@@ -102,8 +103,6 @@ func GetProfile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
-
-
 
 // 1. Profile အချက်အလက်များကို Update လုပ်ရန်
 func UpdateProfile(c *gin.Context) {
