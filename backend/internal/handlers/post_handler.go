@@ -3,39 +3,80 @@ package handlers
 import (
     "backend/internal/database"
     "backend/internal/models"
+    "fmt"
     "net/http"
+    "os"
+    "path/filepath"
+    "strings"
+    "time"
+
     "github.com/gin-gonic/gin"
 )
 
-// Create Post
 func CreatePost(c *gin.Context) {
-    userID := c.MustGet("user_id").(uint)
-    var input struct {
-        Content string `json:"content" binding:"required"`
+    // 💡 အရေးကြီး: Multipart form ကို လက်ခံရန် memory limit သတ်မှတ်ပါ
+    if err := c.Request.ParseMultipartForm(32 << 20); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "File too large"})
+        return
     }
 
-    if err := c.ShouldBindJSON(&input); err != nil {
+    val, _ := c.Get("user_id")
+    userID := val.(uint)
+
+    // 💡 PostForm ကို သုံးပြီး Content ကို ယူပါ
+    content := strings.TrimSpace(c.PostForm("content"))
+    file, fileErr := c.FormFile("media")
+
+    // စာရော ပုံရော မပါရင် error ပြမယ်
+    if content == "" && fileErr != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Content is required"})
         return
     }
 
-    post := models.Post{Content: input.Content, UserID: userID}
+    mediaURL := ""
+    mediaType := "text"
+
+    if fileErr == nil {
+        uploadDir := "uploads/posts"
+        os.MkdirAll(uploadDir, os.ModePerm)
+
+        ext := strings.ToLower(filepath.Ext(file.Filename))
+        fileName := fmt.Sprintf("%d_%d%s", userID, time.Now().UnixNano(), ext)
+        savePath := filepath.Join(uploadDir, fileName)
+
+        if err := c.SaveUploadedFile(file, savePath); err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+            return
+        }
+
+        mediaURL = "http://localhost:8080/" + filepath.ToSlash(savePath)
+
+        if strings.Contains(".jpg.jpeg.png.gif.webp", ext) && ext != "" {
+            mediaType = "image"
+        } else if strings.Contains(".mp4.mov.avi.mkv", ext) && ext != "" {
+            mediaType = "video"
+        } else if strings.Contains(".mp3.wav.ogg", ext) && ext != "" {
+            mediaType = "audio"
+        }
+    }
+
+    post := models.Post{Content: content, MediaType: mediaType, MediaURL: mediaURL, UserID: userID}
     database.DB.Create(&post)
+    database.DB.Preload("User").First(&post, post.ID)
     c.JSON(http.StatusCreated, post)
 }
 
-// View All Posts (Feed)
 func GetPosts(c *gin.Context) {
     var posts []models.Post
-    // Preload("User") သုံးခြင်းဖြင့် ပိုစ့်တင်သူနာမည်ပါ တစ်ခါတည်းပါလာမည်
+    // 💡 Preload("User") လုပ်မှ User နာမည်တွေ ပေါ်မှာပါ
     database.DB.Preload("User").Order("created_at desc").Find(&posts)
     c.JSON(http.StatusOK, posts)
 }
 
-// Edit Post (Owner Only)
 func UpdatePost(c *gin.Context) {
     postID := c.Param("id")
-    userID := c.MustGet("user_id").(uint)
+    val, _ := c.Get("user_id")
+    userID := val.(uint)
 
     var post models.Post
     if err := database.DB.First(&post, postID).Error; err != nil {
@@ -43,25 +84,26 @@ func UpdatePost(c *gin.Context) {
         return
     }
 
-    // Security Check: ပိုင်ရှင်ဟုတ်မဟုတ် စစ်ခြင်း
     if post.UserID != userID {
-        c.JSON(http.StatusForbidden, gin.H{"error": "You cannot edit this post"})
+        c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to edit this post"})
         return
     }
 
-    var input struct {
-        Content string `json:"content"`
+    // 💡 Update လုပ်တဲ့အခါလည်း PostForm ကို သုံးပါ
+    newContent := strings.TrimSpace(c.PostForm("content"))
+    if newContent != "" {
+        post.Content = newContent
     }
-    c.ShouldBindJSON(&input)
 
-    database.DB.Model(&post).Update("content", input.Content)
+    database.DB.Save(&post)
+    database.DB.Preload("User").First(&post, post.ID)
     c.JSON(http.StatusOK, post)
 }
 
-// Delete Post (Owner Only)
 func DeletePost(c *gin.Context) {
     postID := c.Param("id")
-    userID := c.MustGet("user_id").(uint)
+    val, _ := c.Get("user_id")
+    userID := val.(uint)
 
     var post models.Post
     if err := database.DB.First(&post, postID).Error; err != nil {
@@ -70,7 +112,7 @@ func DeletePost(c *gin.Context) {
     }
 
     if post.UserID != userID {
-        c.JSON(http.StatusForbidden, gin.H{"error": "You cannot delete this post"})
+        c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to delete this post"})
         return
     }
 

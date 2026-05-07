@@ -18,8 +18,8 @@ func main() {
 
     
     r := gin.Default()
-
-    
+    r.Static("/uploads", "./uploads")
+    r.MaxMultipartMemory = 100 << 20
     routes.SetupRoutes(r)
 
     
