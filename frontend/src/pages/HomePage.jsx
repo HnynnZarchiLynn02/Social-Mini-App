@@ -176,7 +176,7 @@ const HomePage = () => {
     }, []);
 
     return (
-        <div className="max-w-xl mx-auto py-10 px-4">
+        <div className="max-w-2xl mx-auto py-10 px-4">
             <form onSubmit={handleCreatePost} className="bg-white p-4 rounded-xl shadow-sm border mb-6">
                 {error && (
                     <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

@@ -88,8 +88,8 @@ const PostCard = ({
     };
 
     return (
-        <div className="bg-slate-50 rounded-2xl shadow-md shadow-slate-200/70 border border-slate-200 mb-5 overflow-hidden h-[560px] flex flex-col">
-            <div className="p-4 flex items-center justify-between border-b border-slate-200 bg-white/70">
+        <div className="bg-white rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-300 mb-6 overflow-hidden h-[560px] flex flex-col ring-1 ring-slate-200">
+            <div className="p-4 flex items-center justify-between border-b border-slate-300 bg-slate-100">
                 <div className="flex items-center">
                     <img
                         src={post.user?.avatar || 'https://via.placeholder.com/40'}
@@ -122,7 +122,7 @@ const PostCard = ({
                 )}
             </div>
 
-            <div className={`px-4 py-3 overflow-y-auto bg-slate-50 ${post.media_url ? 'min-h-[90px] max-h-[115px]' : 'min-h-[210px] max-h-[240px]'}`}>
+            <div className={`px-4 py-3 overflow-y-auto bg-white ${post.media_url ? 'min-h-[90px] max-h-[115px]' : 'min-h-[210px] max-h-[240px]'}`}>
                 {isEditing ? (
                     <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
                         <textarea
@@ -147,7 +147,7 @@ const PostCard = ({
                         </div>
                     </div>
                 ) : (
-                    <div className={post.media_url ? '' : 'h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-100 px-5 py-4 shadow-inner'}>
+                    <div className={post.media_url ? '' : 'h-full rounded-2xl border border-slate-300 bg-gradient-to-br from-slate-50 to-white px-5 py-4 shadow-inner'}>
                         <p className={`text-gray-800 whitespace-pre-wrap leading-relaxed break-words ${post.media_url ? '' : 'text-[15px]'}`}>
                             {post.content}
                         </p>
@@ -156,7 +156,7 @@ const PostCard = ({
             </div>
 
             {post.media_url && (
-                <div className="bg-slate-100 border-y border-slate-200 flex justify-center h-[190px] overflow-hidden">
+                <div className="bg-slate-900 border-y border-slate-300 flex justify-center h-[190px] overflow-hidden">
                     {post.media_type === 'image' && (
                         <img src={post.media_url} className="w-full h-full object-cover" alt="post" />
                     )}
@@ -173,7 +173,7 @@ const PostCard = ({
                 </div>
             )}
 
-            <div className="border-t border-slate-200 px-4 py-2.5 flex items-center gap-3 bg-white/60">
+            <div className="border-t border-slate-300 px-4 py-2.5 flex items-center gap-3 bg-slate-50">
                 <button
                     onClick={handleLikeClick}
                     disabled={isTogglingLike}
@@ -190,7 +190,7 @@ const PostCard = ({
                 </span>
             </div>
 
-            <div className="border-t border-slate-200 bg-slate-100/70 px-4 py-3 flex-1 min-h-0 flex flex-col">
+            <div className="border-t border-slate-300 bg-slate-100 px-4 py-3 flex-1 min-h-0 flex flex-col">
                 <div className="space-y-3 mb-3 overflow-y-auto pr-1 flex-1">
                     {comments.map((comment) => {
                         const commentID = getID(comment);
@@ -205,7 +205,7 @@ const PostCard = ({
                                     alt="comment avatar"
                                 />
                                 <div className="flex-1">
-                                    <div className="bg-white/90 border border-slate-200 rounded-xl px-3 py-2 shadow-sm">
+                                    <div className="bg-white border border-slate-300 rounded-xl px-3 py-2 shadow-sm">
                                         <div className="flex items-center justify-between gap-3">
                                             <span className="text-sm font-bold text-gray-800 capitalize">
                                                 {comment.user?.username || 'User'}
