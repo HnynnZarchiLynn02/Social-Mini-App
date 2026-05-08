@@ -18,7 +18,7 @@ const LoginPage = () => {
     };
 
     return (
-        // Background ကို Slate-100 သုံးပြီး အနည်းငယ် ပိုမှောင်စေပါတယ် (မီးခိုးနုရောင်)
+        
         <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4 font-sans">
             <div className="w-full max-w-md">
                 {/* App Heading */}
@@ -73,7 +73,7 @@ const LoginPage = () => {
                     </div>
                 </div>
 
-                {/* Footer Link */}
+                
                 <div className="mt-12 text-center">
                     <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest opacity-50">Social App &bull; Secure Login</span>
                 </div>

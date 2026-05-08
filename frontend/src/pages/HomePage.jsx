@@ -108,10 +108,10 @@ const HomePage = () => {
     useEffect(() => { fetchPosts(); }, []);
 
     return (
-        /* ၁။ Container Width ကို max-w-5xl (ပိုကျယ်သော width) သို့ ပြောင်းလဲထားသည် */
+        
         <div className="max-w-5xl mx-auto py-10 px-4">
             
-            {/* Header Area with Search Box Design Change */}
+           
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div className="flex-1">
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight">News Feed</h1>

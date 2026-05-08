@@ -76,8 +76,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Fixed Dashboard Route: 
-            အရင်က <div> HTML တွေအစား DashboardPage component ကို အစားထိုးလိုက်ပါပြီ */}
+        
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <DashboardPage />

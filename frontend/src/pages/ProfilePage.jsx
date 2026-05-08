@@ -8,17 +8,17 @@ const ProfilePage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     
-    // Dynamic Stats အတွက် State များ
+    
     const [stats, setStats] = useState({ postCount: 0, totalLikes: 0 });
 
-    // ပို့စ်အရေအတွက်နှင့် Like စုစုပေါင်းကို Fetch လုပ်မည့် Function
+    
     const fetchUserStats = async () => {
         try {
-            // သင့်ရဲ့ backend မှာ /my-posts သို့မဟုတ် user အလိုက် posts ယူတဲ့ API ရှိရပါမယ်
+            
             const res = await api.get('/my-posts'); 
             const posts = res.data || [];
             
-            // Likes အားလုံးကို ပေါင်းခြင်း
+       
             const likes = posts.reduce((sum, post) => sum + (post.like_count || 0), 0);
             
             setStats({
