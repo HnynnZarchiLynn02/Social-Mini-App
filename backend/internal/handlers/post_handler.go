@@ -48,15 +48,14 @@ func commentContentFromRequest(c *gin.Context) string {
 }
 
 func CreatePost(c *gin.Context) {
-	// 💡 အရေးကြီး: Multipart form ကို လက်ခံရန် memory limit သတ်မှတ်ပါ
+	
 	val, _ := c.Get("user_id")
 	userID := val.(uint)
 
-	// 💡 PostForm ကို သုံးပြီး Content ကို ယူပါ
+	
 	content := postContentFromRequest(c)
 	file, fileErr := c.FormFile("media")
 
-	// စာရော ပုံရော မပါရင် error ပြမယ်
 	if content == "" && fileErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Content is required"})
 		return
@@ -100,7 +99,7 @@ func GetPosts(c *gin.Context) {
 	userID := val.(uint)
 
 	var posts []models.Post
-	// 💡 Preload("User") လုပ်မှ User နာမည်တွေ ပေါ်မှာပါ
+	
 	database.DB.Preload("User").Preload("Comments", func(db *gorm.DB) *gorm.DB {
 		return db.Order("created_at asc")
 	}).Preload("Comments.User").Order("created_at desc").Find(&posts)
@@ -131,7 +130,7 @@ func UpdatePost(c *gin.Context) {
 		return
 	}
 
-	// 💡 Update လုပ်တဲ့အခါလည်း PostForm ကို သုံးပါ
+	
 	newContent := postContentFromRequest(c)
 	if newContent == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Content is required"})
@@ -312,4 +311,35 @@ func DeleteComment(c *gin.Context) {
 
 	database.DB.Delete(&comment)
 	c.JSON(http.StatusOK, gin.H{"message": "Comment deleted successfully"})
+}
+
+func GetUserPosts(c *gin.Context) {
+    // AuthMiddleware ကနေ user_id ကို ယူမယ်
+    val, _ := c.Get("user_id")
+    userID := val.(uint)
+
+    var posts []models.Post
+    
+    // database ထဲမှာ လက်ရှိ user_id နဲ့တူတဲ့ ပို့စ်တွေကိုပဲ ရှာမယ်
+    err := database.DB.Preload("User").
+        Preload("Comments").
+        Preload("Comments.User").
+        Where("user_id = ?", userID). // ဒီနေရာက အဓိက Filter ပါ
+        Order("created_at desc").
+        Find(&posts).Error
+
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch your posts"})
+        return
+    }
+
+    // LikeCount နဲ့ IsLiked ကို တွက်ချက်ခြင်း (GetPosts ထဲကအတိုင်းပဲ သုံးနိုင်ပါတယ်)
+    for i := range posts {
+        database.DB.Model(&models.Like{}).Where("post_id = ?", posts[i].ID).Count(&posts[i].LikeCount)
+        
+        var userLike models.Like
+        posts[i].IsLiked = database.DB.Where("post_id = ? AND user_id = ?", posts[i].ID, userID).First(&userLike).Error == nil
+    }
+
+    c.JSON(http.StatusOK, posts)
 }

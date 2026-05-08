@@ -1,7 +1,7 @@
 package database
 
 import (
-	"backend/internal/models" // သင့် Project Path အမှန်ကို စစ်ဆေးပါ
+	"backend/internal/models" 
 	"fmt"
 	"log"
 	"os"
@@ -27,7 +27,7 @@ func ConnectDB() {
 		log.Fatalf("Database connection error: %v", err)
 	}
 
-	// --- ဒီအပိုင်းကို ထည့်လိုက်ခြင်းဖြင့် Column အသစ်တွေ (Bio, Avatar) ပေါ်လာပါလိမ့်မယ် ---
+	
 	fmt.Println("Migrating database models...")
 	if err := db.AutoMigrate(&models.User{}); err != nil {
 		log.Printf("User migration error: %v", err)

@@ -15,7 +15,7 @@ import (
 	"log"
 )
 
-// RegisterUser - အကောင့်သစ်ဖွင့်ရန်
+
 func RegisterUser(c *gin.Context) {
 	var input struct {
 		Username string `json:"username" binding:"required"`
