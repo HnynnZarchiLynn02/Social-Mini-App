@@ -7,7 +7,7 @@ export const useProfile = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Refresh လုပ်တိုင်း Server ဆီက data အသစ်ကို ဆွဲယူခြင်း
+    
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -25,7 +25,7 @@ export const useProfile = () => {
     const update = async (updatedData) => {
         try {
             const { data } = await api.put('/profile', updatedData);
-            setUser(data.user || data); // Update လုပ်ပြီးရင် state ကို ချက်ချင်းလဲပေးခြင်း
+            setUser(data.user || data); 
             return { success: true };
         } catch (err) {
             return { success: false, error: err.response?.data?.error || "Update error" };

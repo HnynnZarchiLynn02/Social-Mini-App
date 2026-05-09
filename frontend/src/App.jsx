@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx'; // 
 import LogoutButton from './components/LogoutButton.jsx';
 
-// Navigation Bar Component
+
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -26,7 +26,7 @@ const Navbar = () => {
           
         </div>
 
-        {/* User Profile & Logout */}
+       
         <div className="flex items-center gap-4">
           <div className="hidden sm:block text-right">
             <p className="text-sm font-bold text-gray-800">{user?.username || "Guest"}</p>
@@ -39,7 +39,7 @@ const Navbar = () => {
   );
 };
 
-// Authentication Guard Component
+
 const ProtectedRoute = ({ children }) => {
   const user = localStorage.getItem('user');
   if (!user) {
@@ -59,11 +59,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
+        
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Protected Routes */}
+       
         <Route path="/home" element={
           <ProtectedRoute>
             <HomePage />
@@ -83,7 +83,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Default & 404 Routes */}
+       
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="*" element={<div className="h-screen flex items-center justify-center font-bold text-gray-500">404 - Page Not Found</div>} />
       </Routes>

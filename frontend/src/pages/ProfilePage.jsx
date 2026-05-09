@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // useEffect ထည့်သွင်းပါ
+import React, { useState, useEffect } from 'react'; 
 import { useProfile } from '../hooks/useProfile';
 import api from '../api/axios';
 

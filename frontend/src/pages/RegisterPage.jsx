@@ -61,7 +61,7 @@ const RegisterPage = () => {
                             />
                         </div>
 
-                        {/* Password Field */}
+                        
                         <div>
                             <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-2 ml-1">Password</label>
                             <input 

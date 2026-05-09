@@ -125,28 +125,28 @@ func UpdateProfile(c *gin.Context) {
 		return
 	}
 
-	// Database ထဲတွင် User ကို ရှာဖွေခြင်း
+	
 	var user models.User
 	if err := database.DB.First(&user, userID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	// Update လုပ်မည့် Data ကို Map ဖြင့် သတ်မှတ်ခြင်း (GORM အမှားနည်းသောနည်းလမ်း)
+	
 	updates := map[string]interface{}{
 		"username": input.Username,
 		"bio":      input.Bio,
 		"avatar":   input.Avatar,
 	}
 
-	// Database ကို Update လုပ်ခြင်း
+	
 	if err := database.DB.Model(&user).Updates(updates).Error; err != nil {
 		log.Println("GORM Update Error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database update failed: " + err.Error()})
 		return
 	}
 
-	// အောင်မြင်လျှင် updated user ကို ပြန်ပို့ခြင်း
+	
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Profile updated successfully",
