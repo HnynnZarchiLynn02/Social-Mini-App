@@ -108,18 +108,17 @@ const HomePage = () => {
     useEffect(() => { fetchPosts(); }, []);
 
     return (
-        
-        <div className="max-w-5xl mx-auto py-10 px-4">
+        /* Container ကို max-w-6xl အထိ ချဲ့လိုက်ခြင်းဖြင့် နေရာပိုရစေပါတယ် */
+        <div className="max-w-6xl mx-auto py-10 px-4">
             
-           
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div className="flex-1">
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight">News Feed</h1>
                     <p className="text-gray-500">Discover what's happening now</p>
                 </div>
 
-                {/* ၂။ Search Box Design အသစ် (Icon ပါဝင်ပြီး ပိုမိုရှင်းလင်းသော design) */}
-                <div className="relative w-full md:w-80 group">
+                <div className="relative w-full md:w-96 group">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -127,7 +126,7 @@ const HomePage = () => {
                     </div>
                     <input
                         type="text"
-                        className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-2xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all sm:text-sm shadow-sm"
+                        className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-2xl bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm"
                         placeholder="Search posts or creators..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -135,69 +134,87 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Left Side: Create Post (Takes 5 columns on large screens) */}
+            {/* Main Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                
+                {/* --- Left Side: Create Post (40% width approx) --- */}
                 <div className="lg:col-span-5">
-                    <form onSubmit={handleCreatePost} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 sticky top-24">
-                        <h2 className="text-lg font-bold text-gray-800 mb-4">Create Post</h2>
-                        {error && (
-                            <div className="mb-3 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-xs text-red-600">
-                                {error}
-                            </div>
-                        )}
-                        <textarea
-                            className="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/10 border border-transparent focus:border-blue-100 transition-all resize-none min-h-[120px]"
-                            placeholder="Share your thoughts..."
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                        />
-                        <div className="mt-4 space-y-4">
-                            <div className="relative group">
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*,video/*"
-                                    onChange={(e) => setMedia(e.target.files?.[0] || null)}
-                                    className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-                                />
-                                {media && <p className="mt-2 text-[10px] text-blue-500 font-medium italic">Selected: {media.name}</p>}
-                            </div>
+                    <div className="sticky top-24">
+                        <form onSubmit={handleCreatePost} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                            <h2 className="text-xl font-bold text-gray-800 mb-6">Create Post</h2>
+                            
+                            {error && (
+                                <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+                                    {error}
+                                </div>
+                            )}
 
-                            <button
-                                disabled={isPosting || (!content.trim() && !media)}
-                                className="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 hover:shadow-blue-300 disabled:bg-gray-200 disabled:shadow-none transition-all"
-                            >
-                                {isPosting ? 'Publishing...' : 'Post Now'}
-                            </button>
-                        </div>
-                    </form>
+                            <textarea
+                                className="w-full p-5 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/10 border border-transparent focus:border-blue-100 transition-all resize-none min-h-[160px] text-gray-700 leading-relaxed"
+                                placeholder="What's on your mind? Share it with the community..."
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                            />
+
+                            <div className="mt-6 space-y-5">
+                                <div className="p-4 border-2 border-dashed border-gray-100 rounded-2xl hover:border-blue-100 transition-colors bg-gray-50/50">
+                                    <label className="block text-sm font-semibold text-gray-600 mb-2">Add Media</label>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*,video/*"
+                                        onChange={(e) => setMedia(e.target.files?.[0] || null)}
+                                        className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
+                                    />
+                                    {media && (
+                                        <div className="mt-3 flex items-center gap-2 text-blue-600 animate-pulse">
+                                            <span className="text-xs font-bold">📎 Selected: {media.name}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <button
+                                    disabled={isPosting || (!content.trim() && !media)}
+                                    className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-0.5 active:translate-y-0 disabled:bg-gray-200 disabled:shadow-none transition-all"
+                                >
+                                    {isPosting ? 'Publishing...' : 'Post Now'}
+                                </button>
+                            </div>
+                        </form>
+                        
+                        {/* အောက်မှာ Space လေးပိုအောင် (Optional) */}
+                        <p className="mt-6 text-center text-gray-400 text-xs">Community Guidelines apply.</p>
+                    </div>
                 </div>
 
-                {/* Right Side: Feed (Takes 7 columns on large screens) */}
+                {/* --- Right Side: Feed (50-60% width approx) --- */}
                 <div className="lg:col-span-7">
                     {filteredPosts.length === 0 ? (
-                        <div className="bg-white border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center">
-                            <div className="text-4xl mb-3">🔍</div>
-                            <p className="text-gray-500 font-medium">No matches found for your search.</p>
+                        <div className="bg-white border-2 border-dashed border-gray-200 rounded-3xl p-20 text-center">
+                            <div className="text-6xl mb-4">🔎</div>
+                            <h3 className="text-xl font-bold text-gray-800">No results found</h3>
+                            <p className="text-gray-500 mt-2">Try adjusting your search keywords.</p>
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="space-y-8">
                             {filteredPosts.map((post) => (
-                                <PostCard
-                                    key={getID(post)}
-                                    post={post}
-                                    currentUserID={currentUserID}
-                                    onUpdate={handleUpdate}
-                                    onDelete={handleDelete}
-                                    onToggleLike={handleToggleLike}
-                                    onCreateComment={handleCreateComment}
-                                    onUpdateComment={async (id, content) => { await api.put(`/comments/${id}`, { content }); fetchPosts(); }}
-                                    onDeleteComment={async (id) => { if(window.confirm('Delete?')) { await api.delete(`/comments/${id}`); fetchPosts(); } }}
-                                />
+                                <div key={getID(post)} className="transform transition-all hover:translate-x-1">
+                                    <PostCard
+                                        post={post}
+                                        currentUserID={currentUserID}
+                                        onUpdate={handleUpdate}
+                                        onDelete={handleDelete}
+                                        onToggleLike={handleToggleLike}
+                                        onCreateComment={handleCreateComment}
+                                        onUpdateComment={async (id, content) => { await api.put(`/comments/${id}`, { content }); fetchPosts(); }}
+                                        onDeleteComment={async (id) => { if(window.confirm('Delete?')) { await api.delete(`/comments/${id}`); fetchPosts(); } }}
+                                    />
+                                </div>
                             ))}
                         </div>
                     )}
                 </div>
+
             </div>
         </div>
     );

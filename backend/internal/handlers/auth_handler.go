@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 	"time"
 
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
-
 
 func RegisterUser(c *gin.Context) {
 	var input struct {
@@ -106,7 +106,7 @@ func GetProfile(c *gin.Context) {
 
 // 1. Profile အချက်အလက်များကို Update လုပ်ရန်
 func UpdateProfile(c *gin.Context) {
-	// Middleware မှ user_id ကို ယူခြင်း
+
 	val, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: Please login again"})
@@ -114,7 +114,6 @@ func UpdateProfile(c *gin.Context) {
 	}
 	userID := val.(uint)
 
-	// Frontend မှ ပို့သော JSON ကို လက်ခံရန် Struct
 	var input struct {
 		Username string `json:"username"`
 		Bio      string `json:"bio"`
@@ -155,7 +154,6 @@ func UpdateProfile(c *gin.Context) {
 	})
 }
 
-// 2. ပုံတင်ခြင်း (Upload Photo) အတွက် Function
 func UploadAvatar(c *gin.Context) {
 	file, err := c.FormFile("avatar")
 	if err != nil {
@@ -163,19 +161,15 @@ func UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	// ပုံအမည်ကို ထပ်မနေအောင် Timestamp ဖြင့် ပြောင်းပေးခြင်း
 	filename := fmt.Sprintf("%d_%s", time.Now().Unix(), filepath.Base(file.Filename))
 	savePath := filepath.Join("uploads", filename)
 
-	// Folder ထဲသို့ သိမ်းခြင်း
 	if err := c.SaveUploadedFile(file, savePath); err != nil {
 		log.Println("Save File Error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
 	}
 
-	// Frontend သို့ ပုံ URL ပြန်ပို့ခြင်း
-	// ဥပမာ- http://localhost:8080/uploads/12345_image.jpg
 	fileURL := fmt.Sprintf("http://localhost:8080/uploads/%s", filename)
 	c.JSON(http.StatusOK, gin.H{
 		"url": fileURL,

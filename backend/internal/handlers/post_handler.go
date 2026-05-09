@@ -314,13 +314,12 @@ func DeleteComment(c *gin.Context) {
 }
 
 func GetUserPosts(c *gin.Context) {
-    // AuthMiddleware ကနေ user_id ကို ယူမယ်
+    
     val, _ := c.Get("user_id")
     userID := val.(uint)
 
     var posts []models.Post
     
-    // database ထဲမှာ လက်ရှိ user_id နဲ့တူတဲ့ ပို့စ်တွေကိုပဲ ရှာမယ်
     err := database.DB.Preload("User").
         Preload("Comments").
         Preload("Comments.User").
@@ -333,7 +332,7 @@ func GetUserPosts(c *gin.Context) {
         return
     }
 
-    // LikeCount နဲ့ IsLiked ကို တွက်ချက်ခြင်း (GetPosts ထဲကအတိုင်းပဲ သုံးနိုင်ပါတယ်)
+    
     for i := range posts {
         database.DB.Model(&models.Like{}).Where("post_id = ?", posts[i].ID).Count(&posts[i].LikeCount)
         
