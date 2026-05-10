@@ -97,7 +97,7 @@ const PostCard = ({
                         alt="avatar"
                     />
                     <div>
-                        <h4 className="font-bold text-gray-900 capitalize">{post.user?.username}</h4>
+                        <h4 className="font-bold text-gray-900">{post.user?.username}</h4>
                         <span className="text-xs text-gray-400">
                             {new Date(post.CreatedAt).toLocaleString()}
                         </span>

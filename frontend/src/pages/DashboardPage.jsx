@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { postService } from '../services/postService';
-import PostCard from '../components/PostCard';
+import PostCard from "../components/feed/PostCard";
 import { ActivityCard } from '../components/dashboard/ActivityCard';
 import { Loading } from '../components/shared/Loading';
 

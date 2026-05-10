@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { postService } from '../services/postService';
-import PostCard from '../components/PostCard';
+import PostCard from "../components/feed/PostCard";
 import PostForm from '../components/feed/PostForm';
 
 const HomePage = () => {

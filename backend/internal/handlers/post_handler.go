@@ -164,41 +164,49 @@ func DeletePost(c *gin.Context) {
 }
 
 func ToggleLike(c *gin.Context) {
-	postID := c.Param("id")
-	val, _ := c.Get("user_id")
-	userID := val.(uint)
+    postID := c.Param("id")
+    val, _ := c.Get("user_id")
+    userID := val.(uint)
 
-	var post models.Post
-	if err := database.DB.First(&post, postID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
-		return
-	}
+    var post models.Post
+    if err := database.DB.First(&post, postID).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
+        return
+    }
 
-	var like models.Like
-	err := database.DB.Where("post_id = ? AND user_id = ?", post.ID, userID).First(&like).Error
-	isLiked := false
+    var like models.Like
+    
+    err := database.DB.Unscoped().Where("post_id = ? AND user_id = ?", post.ID, userID).First(&like).Error
+    
+    isLiked := false
 
-	if err == nil {
-		database.DB.Delete(&like)
-	} else if err == gorm.ErrRecordNotFound {
-		like = models.Like{PostID: post.ID, UserID: userID}
-		if err := database.DB.Create(&like).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to like post"})
-			return
-		}
-		isLiked = true
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update like"})
-		return
-	}
+    if err == nil {
+        
+        if err := database.DB.Unscoped().Delete(&like).Error; err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to unlike post"})
+            return
+        }
+        isLiked = false
+    } else if err == gorm.ErrRecordNotFound {
+        like = models.Like{PostID: post.ID, UserID: userID}
+        if err := database.DB.Create(&like).Error; err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to like post"})
+            return
+        }
+        isLiked = true
+    } else {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update like"})
+        return
+    }
 
-	var likeCount int64
-	database.DB.Model(&models.Like{}).Where("post_id = ?", post.ID).Count(&likeCount)
+    var likeCount int64
+    
+    database.DB.Model(&models.Like{}).Where("post_id = ?", post.ID).Count(&likeCount)
 
-	c.JSON(http.StatusOK, gin.H{
-		"is_liked":   isLiked,
-		"like_count": likeCount,
-	})
+    c.JSON(http.StatusOK, gin.H{
+        "is_liked":   isLiked,
+        "like_count": likeCount,
+    })
 }
 
 func CreateComment(c *gin.Context) {
@@ -323,7 +331,7 @@ func GetUserPosts(c *gin.Context) {
     err := database.DB.Preload("User").
         Preload("Comments").
         Preload("Comments.User").
-        Where("user_id = ?", userID). // ဒီနေရာက အဓိက Filter ပါ
+        Where("user_id = ?", userID). 
         Order("created_at desc").
         Find(&posts).Error
 

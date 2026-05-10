@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080', // သင်၏ Backend Port
+    baseURL: 'http://localhost:8080',
 });
 
-// Request တိုင်းမှာ JWT Token ပါသွားအောင် Interceptor ထည့်ခြင်း
+
 api.interceptors.request.use((config) => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user?.token) {

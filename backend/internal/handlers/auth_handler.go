@@ -44,7 +44,6 @@ func RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Registration အောင်မြင်ပါသည်"})
 }
 
-// LoginUser - အကောင့်ဝင်ရန်
 func LoginUser(c *gin.Context) {
 	var input struct {
 		Email    string `json:"email" binding:"required"`
@@ -78,10 +77,11 @@ func LoginUser(c *gin.Context) {
 		"token":    tokenString,
 		"id":       user.ID,
 		"username": user.Username,
+		"avatar":   user.Avatar,
 	})
 }
 
-// GetProfile - Profile ကြည့်ရန်
+
 func GetProfile(c *gin.Context) {
 	val, exists := c.Get("user_id")
 	if !exists {
@@ -104,7 +104,7 @@ func GetProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// 1. Profile အချက်အလက်များကို Update လုပ်ရန်
+
 func UpdateProfile(c *gin.Context) {
 
 	val, exists := c.Get("user_id")

@@ -29,7 +29,7 @@ const LoginPage = () => {
                     <p className="text-slate-500 mt-2 font-medium italic">Your space for connection.</p>
                 </div>
 
-                {/* Login Card - Shadow ကို ပိုလေးအောင် ပြင်ထားပါတယ် */}
+                
                 <div className="bg-white p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50">
                     <div className="mb-8">
                         <h2 className="text-2xl font-bold text-slate-800">Sign In</h2>

@@ -16,8 +16,10 @@ func main() {
 	database.DB.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{}, &models.Like{})
 
 	r := gin.Default()
+
+	
 	r.MaxMultipartMemory = 100 << 20
 	routes.SetupRoutes(r)
-
+	
 	r.Run(":8080")
 }
