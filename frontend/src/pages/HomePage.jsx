@@ -58,6 +58,8 @@ const HomePage = () => {
                                 onDelete={async (id) => { if(window.confirm('Delete?')) { await postService.delete(id); fetchPosts(); }}}
                                 onToggleLike={async (id) => { await postService.toggleLike(id); fetchPosts(); }}
                                 onCreateComment={async (id, content) => { await postService.createComment(id, content); fetchPosts(); }}
+                                onUpdateComment={async (commentID, content) => { await postService.updateComment(commentID, content); fetchPosts(); }}
+                                onDeleteComment={async (commentID) => { if(window.confirm('Delete this comment?')) { await postService.deleteComment(commentID); fetchPosts(); }}}
                             />
                         ))
                     )}
