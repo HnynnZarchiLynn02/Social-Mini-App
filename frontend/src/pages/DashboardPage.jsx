@@ -57,9 +57,11 @@ const DashboardPage = () => {
                             post={activePost}
                             currentUserID={currentUserID}
                             onUpdate={(id, content) => handleAction(postService.update(id, content))}
+                            onUpdateComment={(commentId, content) => handleAction(postService.updateComment(commentId, content))}
                             onDelete={(id) => handleAction(postService.delete(id))}
                             onToggleLike={(id) => handleAction(postService.toggleLike(id))}
                             onCreateComment={(id, content) => handleAction(postService.createComment(id, content))}
+                            
                         />
                     </div>
                 </div>

@@ -7,7 +7,15 @@ export const postService = {
         if (data instanceof FormData) return api.post('/posts', data);
         return api.post('/posts', { content: data.content });
     },
-    update: (id, content) => api.put(`/posts/${id}`, { content }),
+    
+    update: (id, formData) => {
+   
+    if (formData instanceof FormData) {
+        return api.put(`/posts/${id}`, formData); 
+    }
+   
+    return api.put(`/posts/${id}`, { content: formData });
+},
     delete: (id) => api.delete(`/posts/${id}`),
     toggleLike: (id) => api.post(`/posts/${id}/like`),
     createComment: (id, content) => api.post(`/posts/${id}/comments`, { content }),

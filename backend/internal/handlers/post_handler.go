@@ -115,34 +115,75 @@ func GetPosts(c *gin.Context) {
 }
 
 func UpdatePost(c *gin.Context) {
-	postID := c.Param("id")
-	val, _ := c.Get("user_id")
-	userID := val.(uint)
+    postID := c.Param("id")
+    val, _ := c.Get("user_id")
+    userID := val.(uint)
 
-	var post models.Post
-	if err := database.DB.First(&post, postID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
-		return
-	}
+    var post models.Post
+    // 1. Find the post in the database
+    if err := database.DB.First(&post, postID).Error; err != nil {
+        c.JSON(404, gin.H{"error": "Post not found"})
+        return
+    }
 
-	if post.UserID != userID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to edit this post"})
-		return
-	}
+    // 2. Check authorization
+    if post.UserID != userID {
+        c.JSON(403, gin.H{"error": "Unauthorized"})
+        return
+    }
 
+    // 3. Update Text Content
+    content := c.PostForm("content")
+    if content != "" {
+        post.Content = content
+    }
+
+    // 4. Handle Media File Update (image/video)
+    file, err := c.FormFile("media")
+    if err == nil {
+        // Create a unique filename using UnixNano to force a URL change
+        ext := strings.ToLower(filepath.Ext(file.Filename))
+        if ext == "" {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid media file"})
+            return
+        }
+
+        // Only support image/video updates here
+        isImage := ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".webp"
+        isVideo := ext == ".mp4" || ext == ".mov" || ext == ".webm" || ext == ".mkv" || ext == ".avi"
+        if !isImage && !isVideo {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Only image/video media is supported"})
+            return
+        }
+
+        newFilename := fmt.Sprintf("%d_%d%s", userID, time.Now().UnixNano(), ext)
+        savePath := filepath.Join("uploads", "posts", newFilename)
+
+        if err := c.SaveUploadedFile(file, savePath); err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save media file"})
+            return
+        }
+
+        post.MediaURL = "http://localhost:8080/" + filepath.ToSlash(savePath)
+        if isVideo {
+            post.MediaType = "video"
+        } else {
+            post.MediaType = "image"
+        }
+    }
+
+    // 5. Save changes and update timestamps
+    post.UpdatedAt = time.Now()
+    if err := database.DB.Save(&post).Error; err != nil {
+        c.JSON(500, gin.H{"error": "Failed to save post"})
+        return
+    }
+
+    // 6. Return updated post
+    database.DB.Preload("User").First(&post, post.ID)
+    c.JSON(200, post)
 	
-	newContent := postContentFromRequest(c)
-	if newContent == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Content is required"})
-		return
-	}
-
-	post.Content = newContent
-	database.DB.Save(&post)
-	database.DB.Preload("User").First(&post, post.ID)
-	c.JSON(http.StatusOK, post)
 }
-
 func DeletePost(c *gin.Context) {
 	postID := c.Param("id")
 	val, _ := c.Get("user_id")
